@@ -1,54 +1,25 @@
+#!/usr/bin/python
 '''
 Created on Oct 23, 2013
 
 @author: drnorris
 '''
-   
-    
-class Star():
-    def __init__(self, myID, position, velocity, mass):
-        self.myID = id
-        self.position = position
-        self.velocity = velocity
-        self.mass = mass
-        massDistributions = []
-    
-    def step(self, xmag, ymag):
-        pass
-    
-    def getPos(self):
-        return self.position
-    
-    def getVel(self):
-        return self.velocity
-    
-    
-class Galaxy():
-    def __init__(self, position, velocity, centerMass):
-        self.position = position
-        self.velocity = velocity
-        self.centerMass = centerMass
-        self.stars = []
-        massDistributions = []
-        
-    def calcGridMassdistribution(self):
-        pass
-        
-    def genStarDistribution(self, count):
-        for c in range(count):
-            self.stars.append(Star(c, starPos, starVel))
-        pass
-    
-    
-class Space():
-    def __init__(self, size):
-        self.size = size
-        self.galaxys = []
-        self.massMaps = []
-    
-    def createGalaxies(self, count):
-        for c in range(couunt):
-                    
+
+#from space import Space
+import sys, os
+#import space
+
+MYNAME=sys.argv[0]
+MYPATH=os.path.realpath(__file__)
+MYDIR=os.path.dirname(os.path.abspath(__file__))
+MYCWD=os.getcwd()
+
+print MYNAME
+print MYPATH
+print MYDIR
+print MYCWD
 
 if __name__ == '__main__':
-    pass
+    mySpace = Space(360)
+    mySpace.createGalaxies(3)
+    print mySpace.getObjectList()
