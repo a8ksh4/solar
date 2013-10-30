@@ -19,9 +19,8 @@ class Star():
             return (self.__class__.__name__, self.position, self.mass)
         if what == "dynamic":
             return (self.__class__.__name__, self.position, self.mass, self.velocity)
-
     
-    def step(self, xmag, ymag):
+    def step(self, xdelta, ydelta):
         pass
     
     def getPos(self):
