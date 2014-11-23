@@ -1,6 +1,6 @@
 from Star import *
 import random
-import phys
+#import phys
 
 class Half():
     def __init__(self, size, origin=0, level=0, pos=None):
@@ -12,7 +12,19 @@ class Half():
         self.addStar(star)
 
     def __sub__(self, star):
-        self.subStar(star):
+        self.subStar(star)
+
+    def __len__(self):
+        return len(self.stars)
+
+    def __iter__(self):
+        for star in self.stars:
+            yield (star.position, star.velocity, star.mass)
+
+    def update(self):
+        for star in half:
+            for star in half:
+                pass
 
     def addStar(self, star):
         self.stars.append(star)
