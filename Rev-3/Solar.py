@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from Half import *
+from phys import *
 import sys, os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,16 +42,16 @@ def animate(half):
     pos, size = getPosSize(stars)
     points, = ax.plot(pos, size, marker='o', linestyle='None')
     ax.set_xlim(0, half.size)
-    ax.set_ylim(0, 11)
-    for t in range(1000):
+    ax.set_ylim(0, star_max_mass+1)
+    for t in range(world_iters):
         half.update()
         pos, size = getPosSize(half)
         points.set_data(pos, size)
-        plt.pause(0.01)
+        plt.pause(world_pause)
 
 if __name__ == '__main__':
-    half = Half(512)
-    half.insertRandStars(5)
+    half = Half()
+    half.insertRandStars(2)
     half.printObjects()
    
     print "Num Stars is:", len(half)

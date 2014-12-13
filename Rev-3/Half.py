@@ -1,9 +1,10 @@
 from Star import *
+from phys import * 
 import random
 #import phys
 
 class Half():
-    def __init__(self, size, origin=0, level=0, pos=None):
+    def __init__(self, size=world_size, origin=0, level=0, pos=None):
         self.origin = origin
         self.size = size
         self.stars = []
@@ -20,19 +21,27 @@ class Half():
 
     def __iter__(self):
         for star in self.stars:
-            yield (star['position'], star['velocity'], star['mass'])
+            yield (star['pos'], star['vel'], star['mass'])
 
     def update(self):
-        self.total_mass = sum([x['mass'] for x in self.stars])
-        self.mass_center = sum([x['mass']*x['position'] \
-                                    for x in self.stars]) / self.total_mass
         for star in self.stars:
-            pos, mass = star['position'], star['mass']
-            mass_d_1 = abs(pos - self.mass_center)
-            mass_d_2 = abs(self.size - pos + self.mass_center)
-            mass_distance = min(mass_d_1, mass_d_2)
-            force = self.total_mass / (mass_distance * mass_distance)
-            star(force)
+            for other in self.stars:
+                if star is other:
+                    continue
+                star * other
+        for star in self.stars:
+            star()
+    #def update(self):
+    #    self.total_mass = sum([x['mass'] for x in self.stars])
+    #    self.mass_center = sum([x['mass']*x['pos'] \
+    #                                for x in self.stars]) / self.total_mass
+    #    for star in self.stars:
+    #        pos, mass = star['pos'], star['mass']
+    #        mass_d_1 = abs(pos - self.mass_center)
+    #        mass_d_2 = abs(self.size - pos + self.mass_center)
+    #        mass_distance = min(mass_d_1, mass_d_2)
+    #        force = self.total_mass / (mass_distance * mass_distance)
+    #        star(force)
 
     def addStar(self, star):
         self.stars.append(star)
@@ -42,10 +51,10 @@ class Half():
 
     def insertRandStars(self, count=5):
         for num in range(count):
-            pos = random.randint(0, self.size)
-            vel = random.randint(0, 10)
-            mass = random.randint(0, 10)
-            self.addStar(Star(pos, vel, mass, self.size, self.t_step))
+            pos = float(random.randint(0, self.size))
+            vel = float(random.randint(0, 10))
+            mass = float(random.randint(1, star_max_mass))
+            self.addStar(Star(pos, vel, mass))
 
     def printObjects(self):
         for star in self.stars:
