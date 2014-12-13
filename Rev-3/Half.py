@@ -7,6 +7,7 @@ class Half():
         self.origin = origin
         self.size = size
         self.stars = []
+        self.t_step = .1
 
     def __add__(self, star):
         self.addStar(star)
@@ -19,12 +20,19 @@ class Half():
 
     def __iter__(self):
         for star in self.stars:
-            yield (star.position, star.velocity, star.mass)
+            yield (star['position'], star['velocity'], star['mass'])
 
     def update(self):
-        for star in half:
-            for star in half:
-                pass
+        self.total_mass = sum([x['mass'] for x in self.stars])
+        self.mass_center = sum([x['mass']*x['position'] \
+                                    for x in self.stars]) / self.total_mass
+        for star in self.stars:
+            pos, mass = star['position'], star['mass']
+            mass_d_1 = abs(pos - self.mass_center)
+            mass_d_2 = abs(self.size - pos + self.mass_center)
+            mass_distance = min(mass_d_1, mass_d_2)
+            force = self.total_mass / (mass_distance * mass_distance)
+            star(force)
 
     def addStar(self, star):
         self.stars.append(star)
@@ -36,8 +44,8 @@ class Half():
         for num in range(count):
             pos = random.randint(0, self.size)
             vel = random.randint(0, 10)
-            mass = random.randint(-10, 10)
-            self.addStar(Star(pos, vel, mass))
+            mass = random.randint(0, 10)
+            self.addStar(Star(pos, vel, mass, self.size, self.t_step))
 
     def printObjects(self):
         for star in self.stars:

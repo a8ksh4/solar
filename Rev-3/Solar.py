@@ -15,10 +15,6 @@ print "os.path.dirname(os.path.abspath(__fiel__)) is: " + MYDIR
 print "os.getcwd() is: " + MYCWD
 
 def graphVis(stars):
-    #x = np.array()
-    #y = np.array()
-    #size = np.array()
-    #velo = np.array()
     position, size, velocity = [], [], []
     for star in stars:
         sx, sv, ss = star
@@ -30,7 +26,27 @@ def graphVis(stars):
     print "Velo:", velocity
     plt.scatter(position, size, velocity, alpha=0.5)
     plt.show()
-    
+
+def animate(half):
+    fig, ax = plt.subplots()
+    def getPosSize(stars):
+        position, size = [], []
+        for star in stars:
+            sx, sv, ss = star
+            position.append(sx)
+            size.append(ss)
+        #print position, size
+        return position, size
+    stars = [star for star in half]
+    pos, size = getPosSize(stars)
+    points, = ax.plot(pos, size, marker='o', linestyle='None')
+    ax.set_xlim(0, half.size)
+    ax.set_ylim(0, 11)
+    for t in range(1000):
+        half.update()
+        pos, size = getPosSize(half)
+        points.set_data(pos, size)
+        plt.pause(0.01)
 
 if __name__ == '__main__':
     half = Half(512)
@@ -39,7 +55,8 @@ if __name__ == '__main__':
    
     print "Num Stars is:", len(half)
     #graphVis( (s for s in half) )
-    graphVis(half)
+    #graphVis(half)
+    animate(half)
 
     #quad.printObjects()
 
