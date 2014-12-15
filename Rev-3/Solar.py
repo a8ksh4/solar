@@ -43,15 +43,20 @@ def animate(half):
     points, = ax.plot(pos, size, marker='o', linestyle='None')
     ax.set_xlim(0, half.size)
     ax.set_ylim(0, star_max_mass+1)
-    for t in range(world_iters):
+    ax.set_yscale('log')
+    #for t in range(world_iters):
+    while True:
         half.update()
+        #half.normalize()
         pos, size = getPosSize(half)
         points.set_data(pos, size)
         plt.pause(world_pause)
 
 if __name__ == '__main__':
     half = Half()
-    half.insertRandStars(2)
+    half.insertRandStars(10)
+    #half.insertStar(1000, 0, 900)
+    #half.insertStar(1500, 0, 1)
     half.printObjects()
    
     print "Num Stars is:", len(half)

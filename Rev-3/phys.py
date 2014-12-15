@@ -1,8 +1,10 @@
 
-GrC = 1
-time_step = 1
-world_size = 512
-world_iters = 10
-world_pause = 0.5
+GrC = 10
+time_step = .05
+#world_size = 4096
+world_size = 65536
+world_iters = 800
+world_pause = 0.00001
+#world_pause = 0
 
-star_max_mass = 100
+star_max_mass = 1000
