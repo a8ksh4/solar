@@ -44,8 +44,8 @@ def animate(half):
     ax.set_xlim(0, half.size)
     ax.set_ylim(0, star_max_mass+1)
     ax.set_yscale('log')
-    #for t in range(world_iters):
-    while True:
+    #while True:
+    for t in range(world_iters):
         half.update()
         #half.normalize()
         pos, size = getPosSize(half)
@@ -62,7 +62,11 @@ if __name__ == '__main__':
     print "Num Stars is:", len(half)
     #graphVis( (s for s in half) )
     #graphVis(half)
-    animate(half)
+    #animate(half)
+    for t in range(world_iters):
+        half.update()
+    half.printObjects()
+
 
     #quad.printObjects()
 
