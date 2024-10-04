@@ -5,55 +5,48 @@
 import cupy as cp
 import matplotlib
 matplotlib.use('TkAgg')  # Change to an interactive backend
-import cupy as cp
 import matplotlib.pyplot as plt
 
 # Simulation parameters
-N = 100  # Number of stars
-G = 6.67430e-11  # Gravitational constant
-dt = 0.01  # Time step
-mass_min = 1e21  # Minimum mass
-mass_max = 1e24  # Maximum mass
+NUM_STARS = 1000  # Number of stars
+# GRV_CONST = 6.67430e-11  # Gravitational constant
+GRV_CONST = 2.0  # Gravitational constant
+TIME_STEP = 0.1  # Time step
+# MASS_MIN = 1e21  # Minimum mass
+# MASS_MAX = 1e24  # Maximum mass
+MASS_MIN = 1.0  # Minimum mass
+MASS_MAX = 10.0  # Maximum mass
 
-# Initialize positions, velocities, and masses
-positions = cp.random.uniform(-1, 1, (N, 2))  # Random positions in 2D space
-velocities = cp.zeros((N, 2))  # Initial velocities
-masses = cp.random.uniform(mass_min, mass_max, N)  # Random masses
 
-# Function to compute gravitational forces
-def compute_forces(positions, masses):
-    diff = positions[:, cp.newaxis, :] - positions[cp.newaxis, :, :]  # Pairwise differences
-    dist_squared = cp.sum(diff ** 2, axis=-1) + 1e-9  # Squared distances with small offset to avoid division by zero
-    dist = cp.sqrt(dist_squared)  # Distances
-    forces = G * masses[:, cp.newaxis] * masses / dist_squared  # Gravitational force magnitude
-    forces_matrix = forces[:, :, cp.newaxis] * diff / dist[:, :, cp.newaxis]  # Force vectors
-    net_forces = cp.sum(forces_matrix, axis=1)  # Net forces on each star
-    return net_forces
 
-# Update the positions and velocities
-def update_positions(positions, velocities, masses, dt):
-    forces = compute_forces(positions, masses)
-    accelerations = forces / masses[:, cp.newaxis]  # F = ma -> a = F/m
-    velocities += accelerations * dt  # Update velocities
-    positions += velocities * dt  # Update positions
-    return positions, velocities
+def main():
+    # Initialize positions, velocities, and masses
+    positions = cp.random.uniform(-1, 1, (NUM_STARS, 2))  # Random positions in 2D space
+    velocities = cp.zeros((NUM_STARS, 2))  # Initial velocities
+    masses = cp.random.uniform(MASS_MIN, MASS_MAX, NUM_STARS)  # Random masses
 
-# Visualization setup
-fig, ax = plt.subplots()
-scat = ax.scatter([], [], s=1)  # Initialize scatter plot with empty data
-ax.set_xlim(-1, 1)
-ax.set_ylim(-1, 1)
+    for step in range(1000):
+        if step % 10 == 0:
+            # Calculate the current density and average velocity
+            avg_vel = cp.mean(velocities, axis=0)
+            avg_x_stdev = cp.std(velocities[:, 0])
+            avg_y_stdev = cp.std(velocities[:, 1])
+            print(step, avg_vel, avg_x_stdev, avg_y_stdev)
 
-# Initialize the scatter plot with the initial positions
-scat.set_offsets(cp.asnumpy(positions))
+        # Calculate the gravitational forces
+        diff = positions[:, cp.newaxis, :] - positions[cp.newaxis, :, :]
+        dist_squared = cp.sum(diff ** 2, axis=-1) + 1e-9
+        dist = cp.sqrt(dist_squared)
+        forces = GRV_CONST * masses[:, cp.newaxis] * masses / dist_squared
+        forces_matrix = forces[:, :, cp.newaxis] * diff / dist[:, :, cp.newaxis]
+        net_forces = cp.sum(forces_matrix, axis=1)
 
-# Run the simulation loop
-for step in range(1000):  # Number of frames
-    print(step)
-    positions, velocities = update_positions(positions, velocities, masses, dt)
-    # Update scatter plot with new positions converted from GPU to CPU
-    scat.set_offsets(cp.asnumpy(positions))  # Transfer positions to CPU
-    plt.pause(0.01)  # Pause briefly to update the plot
+        # Calculate the new velocities
+        velocities += net_forces / masses[:, cp.newaxis] * TIME_STEP
 
-plt.show()
+        # Calculate the new positions
+        positions += velocities * TIME_STEP
 
+
+if __name__ == '__main__':
+    main()

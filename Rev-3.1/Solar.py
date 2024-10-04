@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #!/Users/drnorris/anaconda/bin/python
 #!/Users/drnorris/opt/pypy/bin/pypy
 from Half import *
